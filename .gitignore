@@ -1,0 +1,29 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+.gitignore
+.idea/$PRODUCT_WORKSPACE_FILE$
+.idea/.gitignore
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+client_project/.JavaClient.java.swp
+client_project/KeyboardService.class
+client_project/KeyboardService.java
+java/demo/src/test/java/com/example/demo/Test4.java
+keyboard.iml
+server_project/.KeyboardServiceImpl.java.swo
+server_project/.KeyboardServiceImpl.java.swp
+server_project/.Test1.java.swp
+server_project/.py_server.py.swp
+server_project/.start_server.sh.swp
+server_project/Test1.java
+server_project/TestPySocket.java
+t.txt
+tags

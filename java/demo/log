@@ -256,3 +256,4 @@
 -------------
 -------------
 -------------
+2020-06-27 00:18:49.370  INFO 6489 --- [extShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'

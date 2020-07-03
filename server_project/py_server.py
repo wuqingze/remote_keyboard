@@ -3,8 +3,9 @@
 
 import socket
 import pynput.keyboard
+from pynput.keyboard import Key, Controller
 
-
+keyboard = Controller()
 key_map = {
     'alt':Key.alt,
     'alt_l':Key.alt_l,
@@ -78,10 +79,12 @@ while True:# conn就是客户端链接过来而在服务端为期生成的一个
             data = conn.recv(1024)  #接收数据
             if not data:
                 break
-            msg = data.decode()
+            msg = data.decode().strip()
             print('recive:', msg) #打印接收到的数据
             key_arg = msg.split(':')[1]
             key = key_map.get(key_arg, key_arg)
+            print("key----{0}".format(key))
+            key = 'a'
             if 'press:' in msg:
                 keyboard.press(key)
             elif 'release:' in msg:
@@ -89,5 +92,4 @@ while True:# conn就是客户端链接过来而在服务端为期生成的一个
             conn.send(data.upper()) #然后再发送数据
         except Error as e:
             print('关闭了正在占线的链接！')
-            break
     conn.close()
