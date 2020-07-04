@@ -8,6 +8,25 @@ from pynput import keyboard
 key_stack = []
 
 lock = True
+special_key = [
+ 'Key.alt',
+ 'Key.alt_l',
+ 'Key.alt_r',
+ 'Key.alt_gr',
+ 'Key.cmd',
+ 'Key.cmd_l',
+ 'Key.ctrl',
+ 'Key.ctrl_l',
+ 'Key.esc',
+ 'Key.home',
+ 'Key.left',
+ 'Key.right',
+ 'Key.shift',
+ 'Key.shift_l',
+ 'Key.shift_r',
+ 'Key.space',
+ 'Key.tab',
+]
 
 key_map = {
     r"'\x01'":"a",
@@ -87,6 +106,16 @@ key_map = {
     r"'_'":"-",
     r"'+'":"="
 }
+
+def release_all_special_key():
+    for key in special_key:
+        client = socket.socket(socket.AF_INET,socket.SOCK_STREAM) #声明socket类型，同时生成链接对象
+        client.connect(('127.0.0.1', 55533)) #建立一个链接，连接到本地的6969端口
+        msg = 'release:'+key
+        client.send(msg.encode('utf-8'))  #发送一条信息 python3 只接收btye流
+        data = client.recv(1024) #接收一个信息，并指定接收的大小 为1024字节
+        client.close()
+
 def getkey(key):
 #目的是将引号给去掉
     t = "{0}".format(key)
@@ -109,6 +138,11 @@ def on_press(key):
             1/0
         elif key_stack[-1] == '.'  and key_stack[-2] == 'Key.ctrl_l':
             lock = not lock
+            if lock:
+                print("keyboard lock...")
+            else:
+                print("remote keyboard connected...")
+            release_all_special_key()
             return
     if lock:
         return
@@ -117,20 +151,23 @@ def on_press(key):
     client = socket.socket(socket.AF_INET,socket.SOCK_STREAM) #声明socket类型，同时生成链接对象
     client.connect(('127.0.0.1', 55533)) #建立一个链接，连接到本地的6969端口
     client.send(msg.encode('utf-8'))  #发送一条信息 python3 只接收btye流
-    data = client.recv(1024) #接收一个信息，并指定接收的大小 为1024字节
-    print('recv:',data.decode()) #输出我接收的信息
+    #data = client.recv(1024) #接收一个信息，并指定接收的大小 为1024字节
+    #print('recv:',data.decode()) #输出我接收的信息
     client.close()
     key_stack.append('{0}'.format(key))
 
 def on_release(key):
+    global lock 
+    if lock:
+        return
     t = getkey(key)
     msg = "release:{0}".format(t)
     print("on_release-----{0}".format(msg))
     client = socket.socket(socket.AF_INET,socket.SOCK_STREAM) #声明socket类型，同时生成链接对象
     client.connect(('127.0.0.1', 55533)) #建立一个链接，连接到本地的6969端口
     client.send(msg.encode('utf-8'))  #发送一条信息 python3 只接收btye流
-    data = client.recv(1024) #接收一个信息，并指定接收的大小 为1024字节
-    print('recv:',data.decode()) #输出我接收的信息
+    #data = client.recv(1024) #接收一个信息，并指定接收的大小 为1024字节
+    #print('recv:',data.decode()) #输出我接收的信息
     client.close()
 
 while True:
@@ -138,4 +175,4 @@ while True:
         on_press = on_press,
         on_release = on_release) as listener:
         listener.join()
-
+print("wait inpuputt...")
