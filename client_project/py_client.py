@@ -76,6 +76,16 @@ key_map = {
     r"<88>":"x",
     r"<89>":"y",
     r"<90>":"z",
+    r"'{'":"[",
+    r"'|'":r"\t"[0],
+    r"'}'":"]",
+    r"':'":";",
+    '\'"\'':"'",
+    r"'<'":",",
+    r"'>'":".",
+    r"'?'":"/",
+    r"'_'":"-",
+    r"'+'":"="
 }
 def getkey(key):
 #目的是将引号给去掉
@@ -113,9 +123,6 @@ def on_press(key):
     key_stack.append('{0}'.format(key))
 
 def on_release(key):
-    global lock
-    if lock:
-        return
     t = getkey(key)
     msg = "release:{0}".format(t)
     print("on_release-----{0}".format(msg))
