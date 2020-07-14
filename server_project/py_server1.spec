@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['py_server1.py'],
-             pathex=['D:\\keyboard\\server_project'],
+             pathex=['/mnt/d/keyboard/server_project'],
              binaries=[],
              datas=[],
              hiddenimports=[],
