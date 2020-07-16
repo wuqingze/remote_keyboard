@@ -69,70 +69,65 @@ key_map = {
     '\\\\':'\\'
 }
 
-def process(conn):
-    while True:
+def address_service():
+    service = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    service.bind(('0.0.0.0',2003)) #绑定要监听的端口
+    service.listen(5) #开始监听 表示可以使用五个链接排队
+    while True:# conn就是客户端链接过来而在服务端为期生成的一个链接实例
         try:
+            conn,addr = service.accept() #等待链接,多个链接的时候就会出现问题,其实返回了两个值
             data = conn.recv(32)  #接收数据
-            if not data:
-                break
-            t = data.decode()
-            msg = ''
-            for i in range(0, len(t)):
-                if '\x00' != t[i]:
-                    msg += t[i]
-                else:
-                    break
-            if len(msg) == 0:
-                continue
-            print("[{0} {1}] - {2}".format(threading.currentThread().getName(), time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), msg))
-
-            if 'press:' not in msg and 'release:' not in msg:
-                continue
-
-            if 'press:' in msg and 'release:' in msg:
-                continue
-
-            if 'press:' in msg and not ( len(msg.split('press:')) == 2 and msg.startswith('press:')):
-                continue
-
-            if 'release:' in msg and not ( len(msg.split('release:')) == 2 and msg.startswith('release:')):
-                continue
-
-            if 'press:' in msg:
-                key = msg.split("press:")[1]
-                key = key_map.get(key, key)
-                keyboard.press(key)
-            elif 'release:' in msg:
-                key = msg.split("release:")[1]
-                key = key_map.get(key, key)
-                keyboard.release(key)
             conn.send(data.upper()) #然后再发送数据
+            conn.close()
         except Error as e:
             print('关闭了正在占线的链接！')
-    conn.close()
+
+threading.Thread(target=address_service).start()
 
 keyboard = Controller()
-# 建立一个服务端
-server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+UDP_IP = "0.0.0.0"
+UDP_PORT = 2002 
 
-'''
-TCP 协议是面向连接的、可靠的、基于字节流的传输层通信协议3，
-应用层交给TCP 协议的数据并不会以消息为单位向目的主机传输，
-这些数据在某些情况下会被组合成一个数据段发送给目标的主机。
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+sock.bind((UDP_IP, UDP_PORT))
 
-Nagle 算法是一种通过减少数据包的方式提高 TCP 传输性能的算法4。
-因为网络带宽有限，它不会将小的数据块直接发送到目的主机，
-而是会在本地缓冲区中等待更多待发送的数据，这种批量发送数据的
-策略虽然会影响实时性和网络延迟，但是能够降低网络拥堵的可能
-性并减少额外开销。
-'''
-server.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,True) #解决tcp沾包问题，
+print("远程键盘服务开启，等待连接...")
 
-server.bind(('0.0.0.0',2001)) #绑定要监听的端口
-server.listen(5) #开始监听 表示可以使用五个链接排队
-while True:# conn就是客户端链接过来而在服务端为期生成的一个链接实例
-    conn,addr = server.accept() #等待链接,多个链接的时候就会出现问题,其实返回了两个值
-    print(conn,addr)
-    t = threading.Thread(target=process, args=(conn,))
-    t.start()
+while True:
+    try:
+        data, addr = sock.recvfrom(32) # buffer size is 1024 bytes
+        if not data:
+            break
+        t = data.decode()
+        msg = ''
+        for i in range(0, len(t)):
+            if '\x00' != t[i]:
+                msg += t[i]
+            else:
+                break
+        if len(msg) == 0:
+            continue
+        print("[{0} {1}] - {2}".format(threading.currentThread().getName(), time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), msg))
 
+        if 'press:' not in msg and 'release:' not in msg:
+            continue
+
+        if 'press:' in msg and 'release:' in msg:
+            continue
+
+        if 'press:' in msg and not ( len(msg.split('press:')) == 2 and msg.startswith('press:')):
+            continue
+
+        if 'release:' in msg and not ( len(msg.split('release:')) == 2 and msg.startswith('release:')):
+            continue
+
+        if 'press:' in msg:
+            key = msg.split("press:")[1]
+            key = key_map.get(key, key)
+            keyboard.press(key)
+        elif 'release:' in msg:
+            key = msg.split("release:")[1]
+            key = key_map.get(key, key)
+            keyboard.release(key)
+    except Error as e:
+        print('关闭了正在占线的链接！')
