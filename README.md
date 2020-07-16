@@ -1,17 +1,10 @@
-<style>
-	.img {
-		list-style:none;
-		float:left;
-		width:50%;
-	   }
-</style>
 ### 介绍
 ---
 本项目提供远程键盘输入的功能，双手不用离开键盘,通过一台电脑对另一台电脑进行键盘输入。
 
 <ul>
-	<li class="img"><img src="./images/server.png"/><center>图1 server端(电脑1)</center></li>
-	<li class="img"><img src="./images/client.png"/><center>图2 client端(电脑2)</center></li>
+	<li style="list-style:none;float:left;width:50%"><img src="./images/server.png"/><center>图1 server端(电脑1)</center></li>
+	<li style="list-style:none;float:left;width:50%"><img src="./images/client.png"/><center>图2 client端(电脑2)</center></li>
 </ul>
 <center>(可以利用电脑2的键盘在电脑1上进行输入)</center>
 
