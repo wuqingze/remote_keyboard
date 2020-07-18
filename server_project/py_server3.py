@@ -110,7 +110,7 @@ while True:
             continue
         print("[{0} {1}] - {2}".format(threading.currentThread().getName(), time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), msg))
 
-        if not re.match(r'^(press:\S|press:Key.\w+|release:\S|release:Key.\w+)$', msg):
+        if not re.match(r'^(press:\S|press:Key.\w+|release:\S|release:Key.\w+|press:\\\\|release:\\\\)$', msg):
             continue
 
         if 'press:' in msg:
