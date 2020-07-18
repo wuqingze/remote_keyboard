@@ -28,7 +28,7 @@ surface go不能胜任开发任务，但是起码打字还是可以的，用来�
 被控制的电脑
 ```
 1. 进入server_project目录
-2. python py_server2.py
+2. python py_server3.py
 ```
 
 控制的电脑(用来键盘输入的电脑）
