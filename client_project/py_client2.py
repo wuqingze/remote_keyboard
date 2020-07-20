@@ -25,15 +25,9 @@ special_key = [
  'Key.cmd_l',
  'Key.ctrl',
  'Key.ctrl_l',
- 'Key.esc',
- 'Key.home',
- 'Key.left',
- 'Key.right',
  'Key.shift',
  'Key.shift_l',
  'Key.shift_r',
- 'Key.space',
- 'Key.tab',
 ]
 
 key_map = {
